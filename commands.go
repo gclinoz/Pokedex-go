@@ -4,7 +4,10 @@ import (
 	"fmt"
 	"os"
 	"errors"
+	"math/rand"
 )
+
+const catchThres = 10
 
 func commandExit(cfg *config, site ...string) error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
@@ -58,6 +61,11 @@ func getMapb(cfg *config, site ...string) error {
 }
 
 func explorePoke(cfg *config, site ...string) error {
+	if len(site) == 0 {
+		fmt.Println("Please provide location to explore")
+		return nil
+	}
+
 	res, err := cfg.pokeapiClient.ExploreLocations(site[0])
 	if err != nil {
 		return err
@@ -65,6 +73,28 @@ func explorePoke(cfg *config, site ...string) error {
 
 	for _, loc := range res.PokemonEncounters {
 		fmt.Println(loc.Pokemon.Name)
+	}
+	return nil
+}
+
+func catchPoke(cfg *config, target ...string) error {
+	if len(target) == 0 {
+		fmt.Println("Please provide target to catch")
+		return nil
+	}
+
+	res, err := cfg.pokeapiClient.GetPokemon(target[0])
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Throwing a Pokeball at %s...\n", target[0])
+	result := rand.Intn(res.BaseExperience)
+	if result > catchThres {
+		fmt.Println(target[0], "escaped!")
+	} else {
+		fmt.Println(target[0], "was caught!")
+		cfg.pokedex[target[0]] = res
 	}
 	return nil
 }
