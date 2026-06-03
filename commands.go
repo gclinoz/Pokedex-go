@@ -98,3 +98,18 @@ func catchPoke(cfg *config, target ...string) error {
 	}
 	return nil
 }
+
+func showPoke(cfg *config, target ...string) error {
+	dat, ok := cfg.pokedex[target[0]]
+	if ok {
+		fmt.Println("Order:", dat.Order)
+		fmt.Println("Name:", dat.Name)
+		fmt.Println("BaseExperience:", dat.BaseExperience)
+		fmt.Println("Height:", dat.Height)
+		fmt.Println("Weight:", dat.Weight)
+		return nil
+	} else {
+		return errors.New("You haven't catch it yet")
+	}
+	return nil
+}
