@@ -7,7 +7,7 @@ import (
 	"math/rand"
 )
 
-const catchThres = 10
+const catchThres = 30
 
 func commandExit(cfg *config, site ...string) error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
@@ -100,6 +100,11 @@ func catchPoke(cfg *config, target ...string) error {
 }
 
 func showPoke(cfg *config, target ...string) error {
+	if len(target) == 0 {
+		fmt.Println("Please provide target to inspect")
+		return nil
+	}
+
 	dat, ok := cfg.pokedex[target[0]]
 	if ok {
 		fmt.Println("Order:", dat.Order)
@@ -110,6 +115,19 @@ func showPoke(cfg *config, target ...string) error {
 		return nil
 	} else {
 		return errors.New("You haven't catch it yet")
+	}
+	return nil
+}
+
+func listPoke(cfg *config, target ...string) error {
+	if len(cfg.pokedex) == 0 {
+		fmt.Println("You haven't catch any Pokemon")
+		return nil
+	}
+
+	fmt.Println("Your Pokedex:")
+	for k, _ := range cfg.pokedex {
+		fmt.Println(" -", k)
 	}
 	return nil
 }
